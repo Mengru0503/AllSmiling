@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #FAF8F5;
+    color: #4A3E3D;
+  }
+}
+
+/* 質感滾動條 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #FAF8F5;
+}
+::-webkit-scrollbar-thumb {
+  background: #D9C5B2;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #8C7A79;
+}
+
+/* 鐳射炫光閃爍動畫 */
+@keyframes laser-sheen {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.laser-effect {
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    rgba(255, 182, 193, 0.4) 25%,
+    rgba(255, 255, 180, 0.4) 45%,
+    rgba(173, 216, 230, 0.4) 65%,
+    rgba(221, 160, 221, 0.4) 85%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: laser-sheen 6s infinite linear;
+  mix-blend-mode: color-dodge;
+  pointer-events: none;
+}
+
+/* 霧面細緻質感效果 */
+.matte-effect {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.3) 1px, transparent 0);
+  background-size: 4px 4px;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+/* 布紋復古質感 */
+.canvas-effect {
+  background-image: repeating-linear-gradient(45deg, rgba(74, 62, 61, 0.05) 0, rgba(74, 62, 61, 0.05) 1px, transparent 0, transparent 50%);
+  background-size: 6px 6px;
+  pointer-events: none;
+}
