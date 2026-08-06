@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import Navbar from './components/Navbar.jsx';
 import HeroSection from './components/HeroSection.jsx';
+import InstagramBanner from './components/InstagramBanner.jsx';
 import BadgeEditor from './components/BadgeEditor.jsx';
 import ProductConfigurator from './components/ProductConfigurator.jsx';
 import CheckoutModal from './components/CheckoutModal.jsx';
@@ -14,7 +15,6 @@ export default function App() {
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
 
-  // 預設 5*5cm 磁鐵示範訂單，方便測試商家後台圖檔下載
   const [orders, setOrders] = useState([
     {
       orderId: 'SC-982103',
@@ -41,7 +41,6 @@ export default function App() {
           imageDataUrls: [
             'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect width="200" height="200" fill="%23E8DFD8"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%234A3E3D" font-size="20">相片 1 (50mm)</text></svg>',
             'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect width="200" height="200" fill="%23D9C5B2"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%234A3E3D" font-size="20">相片 2 (50mm)</text></svg>',
-            'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect width="200" height="200" fill="%239BB0A5"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="%23FFFFFF" font-size="20">相片 3 (50mm)</text></svg>',
           ],
         }
       ]
@@ -89,21 +88,22 @@ export default function App() {
           <AdminPanel orders={orders} />
         </main>
       ) : (
-        <main className="flex-1 space-y-12 pb-16">
+        <main className="flex-1 space-y-8 pb-16">
           
+          {/* 可點擊連結至 IG 主頁的動態 GIF 橫幅區塊 (含上下遮罩與 RWD) */}
+          <InstagramBanner />
+
           {/* Hero Banner 主視覺 */}
           <HeroSection onStartCustomizing={scrollToEditor} />
 
           {/* 5*5cm 核心編輯器與商品選項 */}
           <div ref={editorRef} className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 scroll-mt-24">
             
-            {/* 5cm × 5cm 1:1 正方形相片磁鐵 裁切編輯器 */}
             <BadgeEditor
               selectedFinish={selectedFinish}
               onCustomImagesReady={setCustomImageDataUrls}
             />
 
-            {/* Sun Cloud 風格套組選項與條款說明 */}
             <ProductConfigurator
               selectedFinish={selectedFinish}
               setSelectedFinish={setSelectedFinish}
@@ -113,7 +113,7 @@ export default function App() {
 
           </div>
 
-          {/* SunCloud 風格製作解說 */}
+          {/* 製作解說 */}
           <section id="process" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
             <div className="bg-white rounded-3xl p-8 shadow-craft-md border border-craft-border">
               <div className="text-center max-w-2xl mx-auto mb-8">
@@ -156,7 +156,6 @@ export default function App() {
         </main>
       )}
 
-      {/* 結帳 Modal */}
       <CheckoutModal
         isOpen={isCheckoutOpen}
         onClose={() => setIsCheckoutOpen(false)}
@@ -166,7 +165,6 @@ export default function App() {
         onNewOrderSubmitted={handleNewOrderSubmitted}
       />
 
-      {/* 頁尾 Footer */}
       <footer className="bg-white border-t border-craft-border py-8">
         <div className="max-w-7xl mx-auto px-4 text-center space-y-3">
           <p className="text-xs text-craft-subtext font-sans flex items-center justify-center gap-1">
