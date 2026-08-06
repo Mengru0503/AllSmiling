@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Trash2, CheckCircle2, CreditCard, Truck, User, Phone, MapPin, Sparkles } from 'lucide-react';
+import { X, Trash2, CheckCircle2, CreditCard, Truck, User, Phone, MapPin, Sparkles, Grid } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 export default function CheckoutModal({ isOpen, onClose, cartItems, onRemoveItem, onClearCart, onNewOrderSubmitted }) {
@@ -18,7 +18,7 @@ export default function CheckoutModal({ isOpen, onClose, cartItems, onRemoveItem
     e.preventDefault();
     if (cartItems.length === 0) return;
 
-    const newId = 'CC-' + Math.floor(100000 + Math.random() * 900000);
+    const newId = 'SC-' + Math.floor(100000 + Math.random() * 900000);
     setOrderId(newId);
 
     const orderData = {
@@ -38,9 +38,8 @@ export default function CheckoutModal({ isOpen, onClose, cartItems, onRemoveItem
 
     setIsSuccess(true);
 
-    // 觸發彩帶動畫
     confetti({
-      particleCount: 80,
+      particleCount: 90,
       spread: 70,
       origin: { y: 0.6 }
     });
@@ -60,7 +59,7 @@ export default function CheckoutModal({ isOpen, onClose, cartItems, onRemoveItem
         <div className="bg-craft-bg px-6 py-4 border-b border-craft-border flex items-center justify-between">
           <h3 className="text-lg font-bold font-serif text-craft-text flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-craft-accent" />
-            {isSuccess ? '訂單提交成功！' : '購物車與訂購資料填寫'}
+            {isSuccess ? '訂單提交成功！' : '相片磁鐵購物車與結帳'}
           </h3>
           <button
             onClick={onClose}
@@ -84,11 +83,11 @@ export default function CheckoutModal({ isOpen, onClose, cartItems, onRemoveItem
               </p>
 
               <div className="max-w-md mx-auto bg-craft-bg p-4 rounded-2xl border border-craft-border text-left text-xs text-craft-text space-y-2">
-                <div className="font-bold border-b border-craft-border pb-1">轉帳匯款資訊：</div>
+                <div className="font-bold border-b border-craft-border pb-1">匯款資訊 (付款後 2 工作日內寄出)：</div>
                 <div>銀行代碼：822 中國信託</div>
                 <div>帳號：1234-5678-9012</div>
-                <div>戶名：兜笑了 AllSmiling</div>
-                <div className="text-craft-accent font-medium">請於 24 小時內完成匯款，後台即可開始印製排單實體壓模。</div>
+                <div>戶名：兜笑了 AllSmiling (SunCloud風格磁鐵)</div>
+                <div className="text-craft-accent font-medium">完成匯款後，店家後台將直接依據您裁切好之 5*5cm 圖檔開始排單印製。</div>
               </div>
 
               <button
@@ -106,31 +105,43 @@ export default function CheckoutModal({ isOpen, onClose, cartItems, onRemoveItem
                 <h4 className="text-sm font-semibold text-craft-text mb-3">訂購項目清單</h4>
                 {cartItems.length === 0 ? (
                   <div className="text-center py-8 text-xs text-craft-subtext bg-craft-bg rounded-2xl border border-dashed border-craft-border">
-                    購物車目前是空的，請先上傳圖片並點擊「加入購物車」。
+                    購物車目前是空的，請上傳照片並選擇套組點擊「加入購物車」。
                   </div>
                 ) : (
                   <div className="space-y-3 max-h-48 overflow-y-auto pr-1">
                     {cartItems.map((item) => (
-                      <div key={item.id} className="flex items-center justify-between p-3 rounded-2xl bg-craft-bg border border-craft-border text-xs">
-                        <div className="flex items-center gap-3">
-                          {item.imageDataUrl ? (
-                            <img src={item.imageDataUrl} alt="客製圖" className="w-12 h-12 rounded-full object-cover border border-white shadow-sm" />
-                          ) : (
-                            <div className="w-12 h-12 rounded-full bg-craft-primary/30 flex items-center justify-center text-craft-text">圓形</div>
-                          )}
-                          <div>
-                            <div className="font-bold text-craft-text">{item.productType} ({item.size})</div>
-                            <div className="text-craft-subtext">{item.finish} • 數量: {item.quantity} 個</div>
+                      <div key={item.id} className="p-3.5 rounded-2xl bg-craft-bg border border-craft-border text-xs space-y-2">
+                        <div className="flex items-center justify-between">
+                          <div className="font-bold text-craft-text text-sm">{item.productType}</div>
+                          <div className="flex items-center gap-3">
+                            <span className="font-bold text-craft-accent text-sm">NT$ {item.totalPrice.toLocaleString()}</span>
+                            <button
+                              onClick={() => onRemoveItem(item.id)}
+                              className="text-stone-400 hover:text-rose-500 transition-colors p-1"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
                           </div>
                         </div>
-                        <div className="flex items-center gap-3">
-                          <div className="font-bold text-craft-accent">NT$ {item.totalPrice.toLocaleString()}</div>
-                          <button
-                            onClick={() => onRemoveItem(item.id)}
-                            className="text-stone-400 hover:text-rose-500 transition-colors p-1"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
+
+                        {/* 客製照片預覽圖 */}
+                        {item.imageDataUrls && item.imageDataUrls.length > 0 && (
+                          <div className="flex items-center gap-2 overflow-x-auto py-1">
+                            {item.imageDataUrls.map((url, idx) => (
+                              <img
+                                key={idx}
+                                src={url}
+                                alt={`相片 ${idx + 1}`}
+                                className="w-10 h-10 aspect-square rounded-lg object-cover border border-white shadow-sm shrink-0"
+                              />
+                            ))}
+                          </div>
+                        )}
+
+                        <div className="text-[11px] text-craft-subtext space-y-0.5 pt-1 border-t border-craft-border/50">
+                          <div>• 公開分享意願：{item.shareConsent}</div>
+                          <div>• 版面處理：{item.cropPreference}</div>
+                          <div>• 包裝方式：{item.packagingType}</div>
                         </div>
                       </div>
                     ))}
@@ -145,18 +156,18 @@ export default function CheckoutModal({ isOpen, onClose, cartItems, onRemoveItem
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs font-medium text-craft-subtext mb-1">姓名</label>
+                      <label className="block text-xs font-medium text-craft-subtext mb-1">訂購人姓名 *</label>
                       <input
                         type="text"
                         required
-                        placeholder="請輸入訂購人姓名"
+                        placeholder="請輸入收件者姓名"
                         value={customerName}
                         onChange={(e) => setCustomerName(e.target.value)}
                         className="w-full px-3 py-2 rounded-xl border border-craft-border bg-craft-bg text-xs focus:ring-2 focus:ring-craft-accent outline-none"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-craft-subtext mb-1">聯絡電話</label>
+                      <label className="block text-xs font-medium text-craft-subtext mb-1">聯絡電話 *</label>
                       <input
                         type="tel"
                         required
@@ -169,11 +180,11 @@ export default function CheckoutModal({ isOpen, onClose, cartItems, onRemoveItem
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium text-craft-subtext mb-1">收件地址 / 超商門市名稱</label>
+                    <label className="block text-xs font-medium text-craft-subtext mb-1">收件地址 / 超商門市店號 *</label>
                     <input
                       type="text"
                       required
-                      placeholder="請輸入宅配地址或 7-11/全家 門市店名與店號"
+                      placeholder="請填寫完整寄送地址或 7-11/全家 店名門市"
                       value={address}
                       onChange={(e) => setAddress(e.target.value)}
                       className="w-full px-3 py-2 rounded-xl border border-craft-border bg-craft-bg text-xs focus:ring-2 focus:ring-craft-accent outline-none"
@@ -181,10 +192,12 @@ export default function CheckoutModal({ isOpen, onClose, cartItems, onRemoveItem
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium text-craft-subtext mb-1">備註說明 (選填)</label>
+                    <label className="block text-xs font-medium text-craft-subtext mb-1">
+                      備註欄 (若需分開包裝或特殊交期請填寫於此)
+                    </label>
                     <textarea
                       rows={2}
-                      placeholder="特殊交期或包裝注意事項"
+                      placeholder="例：兩組請幫我分開裝入獨立小袋..."
                       value={note}
                       onChange={(e) => setNote(e.target.value)}
                       className="w-full px-3 py-2 rounded-xl border border-craft-border bg-craft-bg text-xs focus:ring-2 focus:ring-craft-accent outline-none"
